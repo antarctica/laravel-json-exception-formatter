@@ -1,0 +1,15 @@
+# This is an Ansible inventory file. It inherits from /etc/ansible/hosts if it exists
+# It organises hosts/nodes into logical groups which can then be used in playbooks
+
+# This inventory is for the 'development' environment
+
+# It is best practice is group hosts by location and purpose like so:
+
+[bslweb-vagrant]
+bslweb-laravel-json-exception-formatter-dev-node1
+
+[nodes:children]
+bslweb-vagrant
+
+[all-servers:children]
+nodes

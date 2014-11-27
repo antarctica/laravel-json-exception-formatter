@@ -1,0 +1,9 @@
+---
+# Setup experiment infrastructure
+
+- name: setup nodes
+  hosts: nodes
+  remote_user: controller
+  sudo: yes
+  roles:
+    - composer

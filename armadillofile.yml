@@ -1,0 +1,5 @@
+---
+
+dependencies:
+  - ssh://git@stash.ceh.ac.uk:7999/barc/bootstrap.git#v0.1.2
+  - ssh://git@stash.ceh.ac.uk:7999/barc/composer.git#v0.1.4

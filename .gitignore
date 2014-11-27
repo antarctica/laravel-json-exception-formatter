@@ -1,0 +1,5 @@
+.vagrant
+provisioning/roles
+provisioning/public_keys/id_rsa.pub
+composer.lock
+vendor

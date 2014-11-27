@@ -1,0 +1,21 @@
+{
+    "name": "antarctica/laravel-json-exception-formatter",
+    "description": "A custom interface for the Laravel JSON Exception Formatter package.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Felix Fennell",
+            "email": "felnne@bas.ac.uk"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "radweb/json-exception-formatter": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Antarctica\\LaravelJsonExceptionFormatter\\": "src"
+        }
+    }
+}

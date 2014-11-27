@@ -1,0 +1,9 @@
+---
+# Bootstraps a VM for configuration by ansible - this only needs to be run once per host
+
+- name: setup nodes ready for ansible
+  hosts: bslweb-vagrant
+  remote_user: vagrant
+  sudo: yes
+  roles:
+  - bootstrap
