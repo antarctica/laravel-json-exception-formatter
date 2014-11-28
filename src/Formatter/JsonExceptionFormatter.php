@@ -26,11 +26,11 @@ class JsonExceptionFormatter implements FormatterInterface {
 
                 $error['details'] = $exception->getErrors();
                 break;
-            case "Lions\\Exception\\Token\\ExpiredTokenException":
+            case "Lions\\Exception\\Token\\MissingTokenException":
 
                 $error['details'] = [
                     "authentication_error" => [
-                        "The authentication token given has expired and is no longer valid."
+                        "No authentication token was given and no authentication session exists."
                     ]
                 ];
                 break;
@@ -42,11 +42,11 @@ class JsonExceptionFormatter implements FormatterInterface {
                     ]
                 ];
                 break;
-            case "Lions\\Exception\\Token\\MissingTokenException":
+            case "Lions\\Exception\\Token\\ExpiredTokenException":
 
                 $error['details'] = [
                     "authentication_error" => [
-                        "No authentication token was given and no authentication session exists."
+                        "The authentication token given has expired and is no longer valid."
                     ]
                 ];
                 break;
