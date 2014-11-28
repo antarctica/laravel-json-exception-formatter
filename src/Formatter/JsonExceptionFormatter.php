@@ -144,6 +144,14 @@ class JsonExceptionFormatter implements FormatterInterface {
                     ]
                 ];
                 break;
+            case "Lions\\Exception\\Auth\\AuthenticationException":
+
+                $error['details'] = [
+                    "authentication_error" => [
+                        "Incorrect username and password."
+                    ]
+                ];
+                break;
         }
 
         return ['errors' => [$error]];
