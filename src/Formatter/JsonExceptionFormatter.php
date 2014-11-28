@@ -57,7 +57,7 @@ class JsonExceptionFormatter implements FormatterInterface {
 
     public function formatPlain(Exception $exception)
     {
-        // Base error objec
+        // Base error object
         $error = [
             "type" => $this->formatJsonExceptionType($exception),
         ];
