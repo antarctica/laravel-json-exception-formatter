@@ -26,11 +26,7 @@ class JsonExceptionFormatter implements FormatterInterface {
 
                 $error['details'] = $exception->getErrors();
                 break;
-            case "Tymon\\JWTAuth\\Exceptions\\TokenExpiredException":
-
-                // TODO: THis exception will change to one extending HttpExceptionInterface
-                // TODO: This exception should use a 401 status code
-                // TODO: This exception should fire the relevant event for this exception
+            case "Lions\\Exception\\Token\\ExpiredTokenException":
 
                 $error['details'] = [
                     "authentication_error" => [
@@ -38,15 +34,35 @@ class JsonExceptionFormatter implements FormatterInterface {
                     ]
                 ];
                 break;
-            case "Tymon\\JWTAuth\\Exceptions\\TokenInvalidException":
-
-                // TODO: THis exception will change to one extending HttpExceptionInterface
-                // TODO: This exception should use a 400 status code
-                // TODO: This exception should fire the relevant event for this exception
+            case "Lions\\Exception\\Token\\InvalidTokenException":
 
                 $error['details'] = [
                     "authentication_error" => [
                         "The authentication token given is not valid or is malformed."
+                    ]
+                ];
+                break;
+            case "Lions\\Exception\\Token\\MissingTokenException":
+
+                $error['details'] = [
+                    "authentication_error" => [
+                        "No authentication token was given and no authentication session exists."
+                    ]
+                ];
+                break;
+            case "Lions\\Exception\\Token\\UnknownSubjectTokenException":
+
+                $error['details'] = [
+                    "authentication_error" => [
+                        "The subject for the authentication subject is unknown."
+                    ]
+                ];
+                break;
+            case "Lions\\Exception\\Token\\TokenException":
+
+                $error['details'] = [
+                    "authentication_error" => [
+                        "There is something wrong with the token authentication."
                     ]
                 ];
                 break;
