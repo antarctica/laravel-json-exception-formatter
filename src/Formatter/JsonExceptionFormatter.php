@@ -55,6 +55,11 @@ class JsonExceptionFormatter implements FormatterInterface {
                 $error['details'] = [
                     "authentication_error" => [
                         "The subject for the authentication subject is unknown."
+            case "Lions\\Exception\\Token\\BlacklistedTokenException":
+
+                $error['details'] = [
+                    "authentication_error" => [
+                        "The authentication token has been blacklisted and can no longer be used."
                     ]
                 ];
                 break;
@@ -123,6 +128,11 @@ class JsonExceptionFormatter implements FormatterInterface {
                 $error['details'] = [
                     "authentication_error" => [
                         "The subject for the authentication subject is unknown."
+            case "Lions\\Exception\\Token\\BlacklistedTokenException":
+
+                $error['details'] = [
+                    "authentication_error" => [
+                        "The authentication token has been blacklisted and can no longer be used."
                     ]
                 ];
                 break;
