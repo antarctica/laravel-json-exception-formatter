@@ -26,6 +26,30 @@ class JsonExceptionFormatter implements FormatterInterface {
 
                 $error['details'] = $exception->getErrors();
                 break;
+            case "Tymon\\JWTAuth\\Exceptions\\TokenExpiredException":
+
+                // TODO: THis exception will change to one extending HttpExceptionInterface
+                // TODO: This exception should use a 401 status code
+                // TODO: This exception should fire the relevant event for this exception
+
+                $error['details'] = [
+                    "authentication_error" => [
+                        "The authentication token given has expired and is no longer valid."
+                    ]
+                ];
+                break;
+            case "Tymon\\JWTAuth\\Exceptions\\TokenInvalidException":
+
+                // TODO: THis exception will change to one extending HttpExceptionInterface
+                // TODO: This exception should use a 400 status code
+                // TODO: This exception should fire the relevant event for this exception
+
+                $error['details'] = [
+                    "authentication_error" => [
+                        "The authentication token given is not valid or is malformed."
+                    ]
+                ];
+                break;
         }
 
         return ['errors' => [$error]];
