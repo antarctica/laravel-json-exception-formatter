@@ -55,6 +55,9 @@ class JsonExceptionFormatter implements FormatterInterface {
                 $error['details'] = [
                     "authentication_error" => [
                         "The subject for the authentication token is unknown."
+                    ]
+                ];
+                break;
             case "Lions\\Exception\\Token\\BlacklistedTokenException":
 
                 $error['details'] = [
@@ -128,6 +131,9 @@ class JsonExceptionFormatter implements FormatterInterface {
                 $error['details'] = [
                     "authentication_error" => [
                         "The subject for the authentication token is unknown."
+                    ]
+                ];
+                break;
             case "Lions\\Exception\\Token\\BlacklistedTokenException":
 
                 $error['details'] = [
