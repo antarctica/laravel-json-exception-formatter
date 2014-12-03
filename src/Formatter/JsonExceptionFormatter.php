@@ -12,7 +12,7 @@ class JsonExceptionFormatter implements FormatterInterface {
         // Base error object
         $error = [
             "exception" => get_class($exception),
-            "type" => $this->formatJsonExceptionType($exception),
+            "message" => $this->formatJsonExceptionMessage($exception),
             "file" => $exception->getFile(),
             "line" => $exception->getLine(),
             "stack_trace" => $exception->getTrace(),
@@ -91,7 +91,7 @@ class JsonExceptionFormatter implements FormatterInterface {
     {
         // Base error object
         $error = [
-            "type" => $this->formatJsonExceptionType($exception),
+            "message" => $this->formatJsonExceptionMessage($exception),
         ];
 
         // Some exceptions provide additional data so react to the exception class
@@ -164,13 +164,13 @@ class JsonExceptionFormatter implements FormatterInterface {
     }
 
     /**
-     * Format an exception type to a JSON safe string
+     * Format an exception message to a JSON safe string
      *
      * @example "Validation failed" to "validation_failed"
      * @param Exception $exception
      * @return string
      */
-    protected function formatJsonExceptionType(Exception $exception)
+    protected function formatJsonExceptionMessage(Exception $exception)
     {
         return str_replace(' ', '_', strtolower($exception->getMessage()));
     }
