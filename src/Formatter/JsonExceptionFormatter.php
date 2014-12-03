@@ -12,6 +12,7 @@ class JsonExceptionFormatter implements FormatterInterface {
         // Base error object
         $error = [
             "exception" => get_class($exception),
+            "kind" => $this->getExceptionKind($exception),
             "message" => $this->formatJsonExceptionMessage($exception),
             "file" => $exception->getFile(),
             "line" => $exception->getLine(),
@@ -84,6 +85,18 @@ class JsonExceptionFormatter implements FormatterInterface {
                 break;
         }
 
+        // Where no message is given (the exception type is enough), prevent an empty array value being returned
+        if ($error['message'] === '')
+        {
+            unset($error['message']);
+        }
+
+        // Where no exception kind is given (not one of our exceptions), prevent an empty array value being returned
+        if ($error['kind'] === false)
+        {
+            unset($error['kind']);
+        }
+
         return ['errors' => [$error]];
     }
 
@@ -92,6 +105,7 @@ class JsonExceptionFormatter implements FormatterInterface {
         // Base error object
         $error = [
             "message" => $this->formatJsonExceptionMessage($exception),
+            "kind" => $this->getExceptionKind($exception),
         ];
 
         // Some exceptions provide additional data so react to the exception class
@@ -160,6 +174,18 @@ class JsonExceptionFormatter implements FormatterInterface {
                 break;
         }
 
+        // Where no exception message is given (the exception type is enough), prevent an empty array value being returned
+        if ($error['message'] === '')
+        {
+            unset($error['message']);
+        }
+
+        // Where no exception kind is given (not one of our exceptions), prevent an empty array value being returned
+        if ($error['kind'] === false)
+        {
+            unset($error['kind']);
+        }
+
         return ['errors' => [$error]];
     }
 
@@ -173,5 +199,15 @@ class JsonExceptionFormatter implements FormatterInterface {
     protected function formatJsonExceptionMessage(Exception $exception)
     {
         return str_replace(' ', '_', strtolower($exception->getMessage()));
+    }
+
+    protected function getExceptionKind(Exception $exception)
+    {
+        if (method_exists($exception, 'getKind'))
+        {
+            return $exception->getKind();
+        }
+
+        return false;
     }
 }
