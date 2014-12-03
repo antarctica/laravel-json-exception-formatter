@@ -48,6 +48,50 @@ class JsonExceptionFormatter implements FormatterInterface {
 
         $this->formatErrorType($exception, $debug_mode = false);
 
+        // Where no exception message is given (the exception type is enough), prevent an empty array value being returned
+        if ($this->error['message'] === '')
+        {
+            unset($this->error['message']);
+        }
+
+        // Where no exception kind is given (not one of our exceptions), prevent an empty array value being returned
+        if ($this->error['kind'] === false)
+        {
+            unset($this->error['kind']);
+        }
+
+        return ['errors' => [$this->error]];
+    }
+
+    /**
+     * Format an exception message to a JSON safe string
+     *
+     * @example "Validation failed" to "validation_failed"
+     * @param Exception $exception
+     * @return string
+     */
+    protected function formatJsonExceptionMessage(Exception $exception)
+    {
+        return str_replace(' ', '_', strtolower($exception->getMessage()));
+    }
+
+    /**
+     * If an exception implements a getKind() method, return its value, otherwise return false
+     *
+     * @param Exception $exception
+     * @return bool|string
+     */
+    protected function getExceptionKind(Exception $exception)
+    {
+        if (method_exists($exception, 'getKind'))
+        {
+            return $exception->getKind();
+        }
+
+        return false;
+    }
+
+
     /**
      * @param Exception $exception
      * @param bool $debug_mode
@@ -119,47 +163,5 @@ class JsonExceptionFormatter implements FormatterInterface {
                 ];
                 break;
         }
-
-        // Where no exception message is given (the exception type is enough), prevent an empty array value being returned
-        if ($error['message'] === '')
-        {
-            unset($error['message']);
-        }
-
-        // Where no exception kind is given (not one of our exceptions), prevent an empty array value being returned
-        if ($error['kind'] === false)
-        {
-            unset($error['kind']);
-        }
-
-        return ['errors' => [$error]];
-    }
-
-    /**
-     * Format an exception message to a JSON safe string
-     *
-     * @example "Validation failed" to "validation_failed"
-     * @param Exception $exception
-     * @return string
-     */
-    protected function formatJsonExceptionMessage(Exception $exception)
-    {
-        return str_replace(' ', '_', strtolower($exception->getMessage()));
-    }
-
-    /**
-     * If an exception implements a getKind() method, return its value, otherwise return false
-     *
-     * @param Exception $exception
-     * @return bool|string
-     */
-    protected function getExceptionKind(Exception $exception)
-    {
-        if (method_exists($exception, 'getKind'))
-        {
-            return $exception->getKind();
-        }
-
-        return false;
     }
 }
