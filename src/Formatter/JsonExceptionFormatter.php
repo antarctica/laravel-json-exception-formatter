@@ -201,6 +201,12 @@ class JsonExceptionFormatter implements FormatterInterface {
         return str_replace(' ', '_', strtolower($exception->getMessage()));
     }
 
+    /**
+     * If an exception implements a getKind() method, return its value, otherwise return false
+     *
+     * @param Exception $exception
+     * @return bool|string
+     */
     protected function getExceptionKind(Exception $exception)
     {
         if (method_exists($exception, 'getKind'))
