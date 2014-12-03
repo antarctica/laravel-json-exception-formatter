@@ -9,6 +9,10 @@ class JsonExceptionFormatter implements FormatterInterface {
 
     protected $error = [];
 
+    /**
+     * @param Exception $exception
+     * @return array
+     */
     public function formatDebug(Exception $exception)
     {
         // Base error object
@@ -38,6 +42,10 @@ class JsonExceptionFormatter implements FormatterInterface {
         return ['errors' => [$this->error]];
     }
 
+    /**
+     * @param Exception $exception
+     * @return array
+     */
     public function formatPlain(Exception $exception)
     {
         // Base error object
