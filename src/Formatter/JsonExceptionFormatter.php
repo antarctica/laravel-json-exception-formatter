@@ -10,69 +10,58 @@ class JsonExceptionFormatter implements FormatterInterface {
     protected $error = [];
 
     /**
+     * Much of the code for debug and non-debug error exceptions is the same, this saves repeating this common code
+     *
+     * @param Exception $exception
+     * @param $debug_mode
+     * @return array
+     */
+    protected function formatCommon(Exception $exception, $debug_mode)
+    {
+        // Populate error object
+        $this->error['kind'] = $this->getExceptionKind($exception);
+        $this->error['message'] = $this->formatJsonExceptionMessage($exception);
+
+        // Customise response based on exception type
+        $this->customiseForException($exception, $debug_mode);
+
+        // Clean up response (missing fields etc)
+        $this->cleanUpResponse($debug_mode);
+
+        // Errors are fatal so this will become the response
+        return ['errors' => [$this->error]];
+    }
+
+    /**
+     * Used when debug mode is true
+     *
      * @param Exception $exception
      * @return array
      */
     public function formatDebug(Exception $exception)
     {
-        // Base error object
-        $this->error = [
-            "exception" => get_class($exception),
-            "kind" => $this->getExceptionKind($exception),
-            "message" => $this->formatJsonExceptionMessage($exception),
-            "file" => $exception->getFile(),
-            "line" => $exception->getLine(),
-            "stack_trace" => $exception->getTrace(),
-        ];
+        // Populate error object
+        $this->error['exception'] = get_class($exception);
+        $this->error['file'] = $exception->getFile();
+        $this->error['line'] = $exception->getLine();
+        $this->error['stack_trace'] = $exception->getTrace();
 
-        $this->formatErrorType($exception, $debug_mode = true);
-
-        // Where no message is given (the exception type is enough), prevent an empty array value being returned
-        if ($this->error['message'] === '')
-        {
-            unset($this->error['message']);
-        }
-
-        // Where no exception kind is given (not one of our exceptions), prevent an empty array value being returned
-        if ($this->error['kind'] === false)
-        {
-            unset($this->error['kind']);
-        }
-
-        return ['errors' => [$this->error]];
+        return $this->formatCommon($exception, $debug_mode = true);
     }
 
     /**
+     * Used when debug mode is false
+     *
      * @param Exception $exception
      * @return array
      */
     public function formatPlain(Exception $exception)
     {
-        // Base error object
-        $this->error = [
-            "message" => $this->formatJsonExceptionMessage($exception),
-            "kind" => $this->getExceptionKind($exception),
-        ];
-
-        $this->formatErrorType($exception, $debug_mode = false);
-
-        // Where no exception message is given (the exception type is enough), prevent an empty array value being returned
-        if ($this->error['message'] === '')
-        {
-            unset($this->error['message']);
-        }
-
-        // Where no exception kind is given (not one of our exceptions), prevent an empty array value being returned
-        if ($this->error['kind'] === false)
-        {
-            unset($this->error['kind']);
-        }
-
-        return ['errors' => [$this->error]];
+        return $this->formatCommon($exception, $debug_mode = false);
     }
 
     /**
-     * Format an exception message to a JSON safe string
+     * Standardise an exception message as a javascript safe string
      *
      * @example "Validation failed" to "validation_failed"
      * @param Exception $exception
@@ -99,15 +88,16 @@ class JsonExceptionFormatter implements FormatterInterface {
         return false;
     }
 
-
     /**
+     * Some exceptions provide additional data so react to the exception class
+     *
      * @param Exception $exception
      * @param bool $debug_mode
      */
-    protected function formatErrorType(Exception $exception, $debug_mode)
+    protected function customiseForException(Exception $exception, $debug_mode)
     {
-        // Some exceptions provide additional data so react to the exception class
         // TODO: If this gets large enough, abstract this out a bit using something like call user function
+
         switch (get_class($exception))
         {
             case "Laracasts\\Validation\\FormValidationException":
@@ -170,6 +160,21 @@ class JsonExceptionFormatter implements FormatterInterface {
                     ]
                 ];
                 break;
+        }
+    }
+
+    /**
+     * It looks odd if we include properties with empty values, therefore we remove these to present a cleaner object
+     * @param $debug_mode
+     */
+    protected function cleanUpResponse($debug_mode)
+    {
+        foreach ($this->error as $property => $value)
+        {
+            if ($value === false || $value === '')
+            {
+                unset($property);
+            }
         }
     }
 }
