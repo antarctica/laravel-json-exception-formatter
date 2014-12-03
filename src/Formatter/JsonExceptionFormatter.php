@@ -7,10 +7,12 @@ use Radweb\JsonExceptionFormatter\FormatterInterface;
 
 class JsonExceptionFormatter implements FormatterInterface {
 
+    protected $error = [];
+
     public function formatDebug(Exception $exception)
     {
         // Base error object
-        $error = [
+        $this->error = [
             "exception" => get_class($exception),
             "kind" => $this->getExceptionKind($exception),
             "message" => $this->formatJsonExceptionMessage($exception),
@@ -19,106 +21,50 @@ class JsonExceptionFormatter implements FormatterInterface {
             "stack_trace" => $exception->getTrace(),
         ];
 
-        // Some exceptions provide additional data so react to the exception class
-        // If this gets large enough, abstract this out a bit using something like call user function
-        switch (get_class($exception))
-        {
-            case "Laracasts\\Validation\\FormValidationException":
-
-                $error['details'] = $exception->getErrors();
-                break;
-            case "Lions\\Exception\\Token\\MissingTokenException":
-
-                $error['details'] = [
-                    "authentication_error" => [
-                        "No authentication token was given and no authentication session exists."
-                    ]
-                ];
-                break;
-            case "Lions\\Exception\\Token\\InvalidTokenException":
-
-                $error['details'] = [
-                    "authentication_error" => [
-                        "The authentication token given is not valid or is malformed."
-                    ]
-                ];
-                break;
-            case "Lions\\Exception\\Token\\ExpiredTokenException":
-
-                $error['details'] = [
-                    "authentication_error" => [
-                        "The authentication token given has expired and is no longer valid."
-                    ]
-                ];
-                break;
-            case "Lions\\Exception\\Token\\UnknownSubjectTokenException":
-
-                $error['details'] = [
-                    "authentication_error" => [
-                        "The subject for the authentication token is unknown."
-                    ]
-                ];
-                break;
-            case "Lions\\Exception\\Token\\BlacklistedTokenException":
-
-                $error['details'] = [
-                    "authentication_error" => [
-                        "The authentication token has been blacklisted and can no longer be used."
-                    ]
-                ];
-                break;
-            case "Lions\\Exception\\Token\\TokenException":
-
-                $error['details'] = [
-                    "authentication_error" => [
-                        "There is something wrong with the token authentication."
-                    ]
-                ];
-                break;
-            case "Lions\\Exception\\Auth\\AuthenticationException":
-
-                $error['details'] = [
-                    "authentication_error" => [
-                        "Incorrect username and password."
-                    ]
-                ];
-                break;
-        }
+        $this->formatErrorType($exception, $debug_mode = true);
 
         // Where no message is given (the exception type is enough), prevent an empty array value being returned
-        if ($error['message'] === '')
+        if ($this->error['message'] === '')
         {
-            unset($error['message']);
+            unset($this->error['message']);
         }
 
         // Where no exception kind is given (not one of our exceptions), prevent an empty array value being returned
-        if ($error['kind'] === false)
+        if ($this->error['kind'] === false)
         {
-            unset($error['kind']);
+            unset($this->error['kind']);
         }
 
-        return ['errors' => [$error]];
+        return ['errors' => [$this->error]];
     }
 
     public function formatPlain(Exception $exception)
     {
         // Base error object
-        $error = [
+        $this->error = [
             "message" => $this->formatJsonExceptionMessage($exception),
             "kind" => $this->getExceptionKind($exception),
         ];
 
+        $this->formatErrorType($exception, $debug_mode = false);
+
+    /**
+     * @param Exception $exception
+     * @param bool $debug_mode
+     */
+    protected function formatErrorType(Exception $exception, $debug_mode)
+    {
         // Some exceptions provide additional data so react to the exception class
-        // If this gets large enough, abstract this out a bit using something like call user function
+        // TODO: If this gets large enough, abstract this out a bit using something like call user function
         switch (get_class($exception))
         {
             case "Laracasts\\Validation\\FormValidationException":
 
-                $error['details'] = $exception->getErrors();
+                $this->error['details'] = $exception->getErrors();
                 break;
             case "Lions\\Exception\\Token\\MissingTokenException":
 
-                $error['details'] = [
+                $this->error['details'] = [
                     "authentication_error" => [
                         "No authentication token was given and no authentication session exists."
                     ]
@@ -126,7 +72,7 @@ class JsonExceptionFormatter implements FormatterInterface {
                 break;
             case "Lions\\Exception\\Token\\InvalidTokenException":
 
-                $error['details'] = [
+                $this->error['details'] = [
                     "authentication_error" => [
                         "The authentication token given is not valid or is malformed."
                     ]
@@ -134,7 +80,7 @@ class JsonExceptionFormatter implements FormatterInterface {
                 break;
             case "Lions\\Exception\\Token\\ExpiredTokenException":
 
-                $error['details'] = [
+                $this->error['details'] = [
                     "authentication_error" => [
                         "The authentication token given has expired and is no longer valid."
                     ]
@@ -142,7 +88,7 @@ class JsonExceptionFormatter implements FormatterInterface {
                 break;
             case "Lions\\Exception\\Token\\UnknownSubjectTokenException":
 
-                $error['details'] = [
+                $this->error['details'] = [
                     "authentication_error" => [
                         "The subject for the authentication token is unknown."
                     ]
@@ -150,7 +96,7 @@ class JsonExceptionFormatter implements FormatterInterface {
                 break;
             case "Lions\\Exception\\Token\\BlacklistedTokenException":
 
-                $error['details'] = [
+                $this->error['details'] = [
                     "authentication_error" => [
                         "The authentication token has been blacklisted and can no longer be used."
                     ]
@@ -158,7 +104,7 @@ class JsonExceptionFormatter implements FormatterInterface {
                 break;
             case "Lions\\Exception\\Token\\TokenException":
 
-                $error['details'] = [
+                $this->error['details'] = [
                     "authentication_error" => [
                         "There is something wrong with the token authentication."
                     ]
@@ -166,7 +112,7 @@ class JsonExceptionFormatter implements FormatterInterface {
                 break;
             case "Lions\\Exception\\Auth\\AuthenticationException":
 
-                $error['details'] = [
+                $this->error['details'] = [
                     "authentication_error" => [
                         "Incorrect username and password."
                     ]
