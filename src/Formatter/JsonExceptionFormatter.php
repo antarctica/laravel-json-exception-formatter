@@ -28,6 +28,21 @@ class JsonExceptionFormatter implements FormatterInterface {
         // Customise response based on exception type
         $this->customiseForException($exception, $debug_mode);
 
+        if ($debug_mode === false)
+        {
+            // Change some terminology
+            if (array_key_exists('message', $this->error))
+            {
+                $this->error['summary'] = $this->error['message'];
+                unset($this->error['message']);
+            }
+            if (array_key_exists('kind', $this->error))
+            {
+                $this->error['type'] = $this->error['kind'];
+                unset($this->error['kind']);
+            }
+        }
+
         // Clean up response (missing fields etc)
         $this->cleanUpResponse($debug_mode);
 
