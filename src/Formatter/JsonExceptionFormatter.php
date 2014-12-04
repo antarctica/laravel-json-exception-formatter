@@ -173,7 +173,7 @@ class JsonExceptionFormatter implements FormatterInterface {
         {
             if ($value === false || $value === '')
             {
-                unset($property);
+                unset($this->error[$property]);
             }
         }
     }
