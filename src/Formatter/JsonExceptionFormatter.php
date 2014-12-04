@@ -19,8 +19,11 @@ class JsonExceptionFormatter implements FormatterInterface {
     protected function formatCommon(Exception $exception, $debug_mode)
     {
         // Populate error object
-        $this->error['kind'] = $this->getExceptionKind($exception);
+        $this->error['kind'] = $this->ifExceptionMethodExists('getKind', $exception);
         $this->error['message'] = $exception->getMessage();
+        $this->error['details'] = $this->ifExceptionMethodExists('getDetails', $exception);
+        $this->error['resolution'] = $this->ifExceptionMethodExists('getResolution', $exception);
+        $this->error['resolutionURLs'] = $this->ifExceptionMethodExists('getResolutionURLs', $exception);
 
         // Customise response based on exception type
         $this->customiseForException($exception, $debug_mode);
@@ -61,16 +64,18 @@ class JsonExceptionFormatter implements FormatterInterface {
     }
 
     /**
-     * If an exception implements a getKind() method, return its value, otherwise return false
+     * If an exception implements a given $method, return its value, otherwise return false
      *
+     * @param $method
      * @param Exception $exception
-     * @return bool|string
+     * @return mixed
      */
-    protected function getExceptionKind(Exception $exception)
+    protected function ifExceptionMethodExists($method, Exception $exception)
     {
-        if (method_exists($exception, 'getKind'))
+        if (method_exists($exception, $method))
         {
-            return $exception->getKind();
+            // This is the same as: $exception->method()
+            return call_user_func([$exception, $method]);
         }
 
         return false;
@@ -91,62 +96,6 @@ class JsonExceptionFormatter implements FormatterInterface {
             case "Laracasts\\Validation\\FormValidationException":
 
                 $this->error['details'] = $exception->getErrors();
-                break;
-            case "Lions\\Exception\\Token\\MissingTokenException":
-
-                $this->error['details'] = [
-                    "authentication_error" => [
-                        "No authentication token was given and no authentication session exists."
-                    ]
-                ];
-                break;
-            case "Lions\\Exception\\Token\\InvalidTokenException":
-
-                $this->error['details'] = [
-                    "authentication_error" => [
-                        "The authentication token given is not valid or is malformed."
-                    ]
-                ];
-                break;
-            case "Lions\\Exception\\Token\\ExpiredTokenException":
-
-                $this->error['details'] = [
-                    "authentication_error" => [
-                        "The authentication token given has expired and is no longer valid."
-                    ]
-                ];
-                break;
-            case "Lions\\Exception\\Token\\UnknownSubjectTokenException":
-
-                $this->error['details'] = [
-                    "authentication_error" => [
-                        "The subject for the authentication token is unknown."
-                    ]
-                ];
-                break;
-            case "Lions\\Exception\\Token\\BlacklistedTokenException":
-
-                $this->error['details'] = [
-                    "authentication_error" => [
-                        "The authentication token has been blacklisted and can no longer be used."
-                    ]
-                ];
-                break;
-            case "Lions\\Exception\\Token\\TokenException":
-
-                $this->error['details'] = [
-                    "authentication_error" => [
-                        "There is something wrong with the token authentication."
-                    ]
-                ];
-                break;
-            case "Lions\\Exception\\Auth\\AuthenticationException":
-
-                $this->error['details'] = [
-                    "authentication_error" => [
-                        "Incorrect username and password."
-                    ]
-                ];
                 break;
         }
     }
