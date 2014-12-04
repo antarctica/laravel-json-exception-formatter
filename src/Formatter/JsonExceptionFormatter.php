@@ -43,7 +43,7 @@ class JsonExceptionFormatter implements FormatterInterface {
      */
     public function formatDebug(Exception $exception)
     {
-        // Populate error object
+        // Add extra details from exception error object
         $this->error['exception'] = get_class($exception);
         $this->error['file'] = $exception->getFile();
         $this->error['line'] = $exception->getLine();
@@ -102,16 +102,28 @@ class JsonExceptionFormatter implements FormatterInterface {
 
     /**
      * It looks odd if we include properties with empty values, therefore we remove these to present a cleaner object
-     * @param $debug_mode
+     * @param bool $debug_mode
      */
     protected function cleanUpResponse($debug_mode)
     {
         foreach ($this->error as $property => $value)
         {
-            if ($value === false || $value === '')
+            if ($value === false || $value === '' || is_array($this->error[$property]) && empty($this->error[$property]))
             {
                 unset($this->error[$property]);
             }
         }
+
+        // This is a bit hacky! Its annoying having to collapse the stack trace to see other properties in debug mode
+        if (array_key_exists('stack_trace', $this->error))
+        {
+            $stackTrace = $this->error['stack_trace'];
+
+            unset($this->error['stack_trace']);
+            $this->error['stack_trace'] = $stackTrace;
+        }
+
+        // For non-debug responses sort keys alphabetically for consistency
+        ksort($this->error);
     }
 }
