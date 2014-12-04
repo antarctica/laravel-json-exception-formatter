@@ -20,7 +20,7 @@ class JsonExceptionFormatter implements FormatterInterface {
     {
         // Populate error object
         $this->error['kind'] = $this->getExceptionKind($exception);
-        $this->error['message'] = $this->formatJsonExceptionMessage($exception);
+        $this->error['message'] = $exception->getMessage();
 
         // Customise response based on exception type
         $this->customiseForException($exception, $debug_mode);
@@ -58,18 +58,6 @@ class JsonExceptionFormatter implements FormatterInterface {
     public function formatPlain(Exception $exception)
     {
         return $this->formatCommon($exception, $debug_mode = false);
-    }
-
-    /**
-     * Standardise an exception message as a javascript safe string
-     *
-     * @example "Validation failed" to "validation_failed"
-     * @param Exception $exception
-     * @return string
-     */
-    protected function formatJsonExceptionMessage(Exception $exception)
-    {
-        return str_replace(' ', '_', strtolower($exception->getMessage()));
     }
 
     /**
