@@ -9,8 +9,7 @@ More information and proper README soon.
 Require this package and the base JSON Exception Formatter package in your `composer.json` file:
 
     {
-        "require-dev": {
-            "radweb/json-exception-formatter": "dev-master",
+        "require": {
             "antarctica/laravel-json-exception-formatter": "dev-develop"
         }
     }
@@ -19,7 +18,6 @@ Register both service providers in `app/config/app.php`:
 
     'providers' => array(
     
-        'Radweb\JsonExceptionFormatter\JsonExceptionFormatterServiceProvider',
         'Antarctica\JsonExceptionFormatter\JsonExceptionFormatterServiceProvider',
         
     )
