@@ -2,4 +2,4 @@
 # These variables override those defined by roles
 
 project_hostname_base: "bslweb"  
-project_hostname_project: "faker-providers"
+project_hostname_project: "laravel-json-exception-formatter"
