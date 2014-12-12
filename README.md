@@ -128,6 +128,9 @@ Exception in a debug environment:
 }
 ```
 
+## Contributing
+
+This project welcomes contributions, see `CONTRIBUTING` for our general policy.
 
 ## Developing
 
@@ -198,3 +201,6 @@ vagrant destroy
 
 The `laravel-json-exception-formatter` directory can then be safely deleted as normal.
 
+## License
+
+Copyright 2014 NERC BAS. Licensed under the MIT license, see `LICENSE` for details.
