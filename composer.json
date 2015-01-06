@@ -17,5 +17,9 @@
         "psr-4": {
             "Antarctica\\JsonExceptionFormatter\\": "src"
         }
-    }
+    },
+    "config": {
+        "preferred-install": "dist"
+    },
+    "minimum-stability": "stable"
 }
