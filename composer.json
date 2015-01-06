@@ -11,8 +11,14 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "radweb/json-exception-formatter": "dev-master"
+        "radweb/json-exception-formatter": "0.2.*"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/felnne/JSON-Exception-Formatter"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Antarctica\\JsonExceptionFormatter\\": "src"
