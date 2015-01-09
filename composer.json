@@ -11,15 +11,11 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "radweb/json-exception-formatter": "0.1.*"
+        "radweb/json-exception-formatter": "0.2.*"
     },
     "autoload": {
         "psr-4": {
             "Antarctica\\JsonExceptionFormatter\\": "src"
         }
-    },
-    "config": {
-        "preferred-install": "dist"
-    },
-    "minimum-stability": "stable"
+    }
 }
